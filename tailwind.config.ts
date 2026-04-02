@@ -12,8 +12,17 @@ export default {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+        heading: ['Space Grotesk', 'sans-serif'],
+        body: ['DM Sans', 'sans-serif'],
+      },
     extend: {
       colors: {
+        gold: {
+          DEFAULT: "hsl(43 96% 56%)",
+          light: "hsl(35 100% 65%)",
+          dark: "hsl(43 96% 40%)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
