@@ -1,16 +1,22 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Mail, MapPin, Phone } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    alert("Pesan terkirim! (Demo)");
+    const mailtoLink = `mailto:email@contoh.com?subject=Pesan dari ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0ADari: ${formData.name} (${formData.email})`;
+    window.open(mailtoLink, "_blank");
+    toast({
+      title: "Membuka email client...",
+      description: "Silakan kirim pesan melalui email client Anda.",
+    });
     setFormData({ name: "", email: "", message: "" });
   };
 
@@ -30,7 +36,6 @@ const ContactSection = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -44,22 +49,27 @@ const ContactSection = () => {
             </p>
 
             <div className="space-y-5">
-              {[
-                { icon: Mail, label: "email@contoh.com" },
-                { icon: Phone, label: "+62 812 3456 7890" },
-                { icon: MapPin, label: "Jakarta, Indonesia" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="p-2.5 rounded-lg bg-primary/10">
-                    <item.icon className="text-primary" size={20} />
-                  </div>
-                  <span className="text-foreground">{item.label}</span>
+              <a href="mailto:email@contoh.com" className="flex items-center gap-4 group">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Mail className="text-primary" size={20} />
                 </div>
-              ))}
+                <span className="text-foreground group-hover:text-primary transition-colors">email@contoh.com</span>
+              </a>
+              <a href="tel:+6281234567890" className="flex items-center gap-4 group">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <Phone className="text-primary" size={20} />
+                </div>
+                <span className="text-foreground group-hover:text-primary transition-colors">+62 812 3456 7890</span>
+              </a>
+              <div className="flex items-center gap-4">
+                <div className="p-2.5 rounded-lg bg-primary/10">
+                  <MapPin className="text-primary" size={20} />
+                </div>
+                <span className="text-foreground">Jakarta, Indonesia</span>
+              </div>
             </div>
           </motion.div>
 
-          {/* Form */}
           <motion.form
             onSubmit={handleSubmit}
             initial={{ opacity: 0, x: 30 }}
@@ -67,36 +77,30 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="space-y-5"
           >
-            <div>
-              <input
-                type="text"
-                placeholder="Nama Anda"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-              />
-            </div>
-            <div>
-              <input
-                type="email"
-                placeholder="Email Anda"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-              />
-            </div>
-            <div>
-              <textarea
-                placeholder="Pesan Anda"
-                rows={5}
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Nama Anda"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+            <input
+              type="email"
+              placeholder="Email Anda"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+            <textarea
+              placeholder="Pesan Anda"
+              rows={5}
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
+            />
             <button
               type="submit"
               className="px-8 py-3.5 bg-primary text-primary-foreground font-heading font-semibold rounded-lg hover:opacity-90 transition-opacity glow-gold flex items-center gap-2"

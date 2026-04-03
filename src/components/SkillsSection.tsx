@@ -1,32 +1,41 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
+type SkillLevel = "Beginner" | "Intermediate" | "Advanced" | "Expert";
+
+const levelConfig: Record<SkillLevel, { color: string; dots: number }> = {
+  Beginner: { color: "bg-muted-foreground", dots: 1 },
+  Intermediate: { color: "bg-primary/60", dots: 2 },
+  Advanced: { color: "bg-primary/80", dots: 3 },
+  Expert: { color: "bg-primary", dots: 4 },
+};
+
 const skillCategories = [
   {
     title: "Frontend",
     skills: [
-      { name: "React / Next.js", level: 95 },
-      { name: "TypeScript", level: 90 },
-      { name: "Tailwind CSS", level: 92 },
-      { name: "Vue.js", level: 75 },
+      { name: "React / Next.js", level: "Expert" as SkillLevel },
+      { name: "TypeScript", level: "Expert" as SkillLevel },
+      { name: "Tailwind CSS", level: "Expert" as SkillLevel },
+      { name: "Vue.js", level: "Advanced" as SkillLevel },
     ],
   },
   {
     title: "Backend",
     skills: [
-      { name: "Node.js", level: 88 },
-      { name: "Python", level: 80 },
-      { name: "PostgreSQL", level: 85 },
-      { name: "REST / GraphQL", level: 90 },
+      { name: "Node.js", level: "Advanced" as SkillLevel },
+      { name: "Python", level: "Advanced" as SkillLevel },
+      { name: "PostgreSQL", level: "Advanced" as SkillLevel },
+      { name: "REST / GraphQL", level: "Expert" as SkillLevel },
     ],
   },
   {
     title: "Tools & Lainnya",
     skills: [
-      { name: "Git / GitHub", level: 92 },
-      { name: "Docker", level: 78 },
-      { name: "Figma", level: 85 },
-      { name: "AWS / GCP", level: 72 },
+      { name: "Git / GitHub", level: "Expert" as SkillLevel },
+      { name: "Docker", level: "Intermediate" as SkillLevel },
+      { name: "Figma", level: "Advanced" as SkillLevel },
+      { name: "AWS / GCP", level: "Intermediate" as SkillLevel },
     ],
   },
 ];
@@ -61,22 +70,33 @@ const SkillsSection = () => {
             >
               <h3 className="font-heading font-semibold text-lg text-foreground mb-6">{cat.title}</h3>
               <div className="space-y-5">
-                {cat.skills.map((skill, i) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-foreground font-medium">{skill.name}</span>
-                      <span className="text-muted-foreground">{skill.level}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full bg-primary"
-                        initial={{ width: 0 }}
-                        animate={isInView ? { width: `${skill.level}%` } : {}}
-                        transition={{ duration: 1, delay: 0.3 + 0.1 * i }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                {cat.skills.map((skill, i) => {
+                  const config = levelConfig[skill.level];
+                  return (
+                    <motion.div
+                      key={skill.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ duration: 0.4, delay: 0.3 + 0.1 * i }}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-foreground font-medium text-sm">{skill.name}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {Array.from({ length: 4 }).map((_, dotIdx) => (
+                            <div
+                              key={dotIdx}
+                              className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                                dotIdx < config.dots ? config.color : "bg-secondary"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-muted-foreground w-24 text-right">{skill.level}</span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           ))}

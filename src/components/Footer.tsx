@@ -1,5 +1,11 @@
 import { Github, Linkedin, Instagram } from "lucide-react";
 
+const socialLinks = [
+  { icon: Github, href: "https://github.com", label: "GitHub" },
+  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+];
+
 const Footer = () => {
   return (
     <footer className="py-8 border-t border-border">
@@ -8,13 +14,16 @@ const Footer = () => {
           © 2026 Portfolio. Dibuat dengan ❤️
         </p>
         <div className="flex items-center gap-4">
-          {[Github, Linkedin, Instagram].map((Icon, i) => (
+          {socialLinks.map((item) => (
             <a
-              key={i}
-              href="#"
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              <Icon size={20} />
+              <item.icon size={20} />
             </a>
           ))}
         </div>
