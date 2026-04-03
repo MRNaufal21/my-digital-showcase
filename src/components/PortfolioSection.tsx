@@ -11,6 +11,8 @@ const projects = [
     category: "Web App",
     tech: ["React", "Node.js", "PostgreSQL"],
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
   {
     title: "Dashboard Analytics",
@@ -18,6 +20,8 @@ const projects = [
     category: "Web App",
     tech: ["Next.js", "D3.js", "Tailwind"],
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
   {
     title: "Travel App",
@@ -25,6 +29,8 @@ const projects = [
     category: "Mobile",
     tech: ["React Native", "Firebase", "AI/ML"],
     image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
   {
     title: "Brand Identity",
@@ -32,6 +38,8 @@ const projects = [
     category: "UI/UX",
     tech: ["Figma", "Illustrator", "After Effects"],
     image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
   {
     title: "Task Management",
@@ -39,6 +47,8 @@ const projects = [
     category: "Web App",
     tech: ["Vue.js", "Supabase", "TypeScript"],
     image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
   {
     title: "Fitness Tracker",
@@ -46,6 +56,8 @@ const projects = [
     category: "Mobile",
     tech: ["Flutter", "Go", "MongoDB"],
     image: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=600&h=400&fit=crop",
+    demo: "https://example.com",
+    github: "https://github.com",
   },
 ];
 
@@ -111,12 +123,22 @@ const PortfolioSection = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                  <button className="p-3 rounded-full bg-primary text-primary-foreground hover:opacity-80 transition-opacity">
+                  <a
+                    href={project.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-full bg-primary text-primary-foreground hover:opacity-80 transition-opacity"
+                  >
                     <ExternalLink size={18} />
-                  </button>
-                  <button className="p-3 rounded-full bg-secondary text-secondary-foreground hover:opacity-80 transition-opacity">
+                  </a>
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-full bg-secondary text-secondary-foreground hover:opacity-80 transition-opacity"
+                  >
                     <Github size={18} />
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className="p-5">
