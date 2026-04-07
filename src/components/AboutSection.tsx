@@ -1,13 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Code2, Palette, Rocket } from "lucide-react";
-
-const highlights = [
-  { icon: Code2, title: "Clean Code", desc: "Menulis kode yang bersih, efisien, dan mudah di-maintain." },
-  { icon: Palette, title: "Design Focused", desc: "Desain yang user-centric dengan perhatian pada detail." },
-  { icon: Rocket, title: "Performance", desc: "Optimisasi performa untuk pengalaman pengguna terbaik." },
-];
+import profileImg from "@/assets/profile.jpeg";
 
 const AboutSection = () => {
   const ref = useRef(null);
@@ -27,11 +21,27 @@ const AboutSection = () => {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center"
+          >
+            <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl">
+              <img
+                src={profileImg}
+                alt="Profile photo"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
             className="space-y-5 text-muted-foreground leading-relaxed"
           >
             <p>
@@ -46,28 +56,11 @@ const AboutSection = () => {
               Setiap proyek yang saya kerjakan selalu mengutamakan kualitas dan
               kepuasan pengguna.
             </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid gap-4"
-          >
-            {highlights.map((item, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
-              >
-                <div className="p-2.5 rounded-lg bg-primary/10">
-                  <item.icon className="text-primary" size={22} />
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-foreground mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+            <p>
+              Saya selalu bersemangat untuk belajar teknologi baru dan mengikuti
+              perkembangan terkini di dunia web development. Kolaborasi dan
+              komunikasi yang baik adalah kunci keberhasilan setiap proyek.
+            </p>
           </motion.div>
         </div>
       </div>
