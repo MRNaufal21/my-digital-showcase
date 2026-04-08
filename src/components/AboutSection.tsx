@@ -32,7 +32,7 @@ const AboutSection = () => {
               <img
                 src={profileImg}
                 alt="Profile photo"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
             </div>
