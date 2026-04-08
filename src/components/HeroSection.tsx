@@ -30,11 +30,20 @@ const HeroSection = () => {
           <span className="text-gradient">Anda</span>
         </motion.h1>
 
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto mb-6 font-body"
+        >
+          Full-Stack Developer & UI/UX Designer — Membangun pengalaman digital yang bermakna dan berdampak.
+        </motion.p>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex items-center justify-center gap-4 mb-6"
+          transition={{ delay: 0.7 }}
+          className="flex items-center justify-center gap-4 mb-10"
         >
           {[
             { icon: Github, href: "https://github.com", label: "GitHub" },
@@ -54,15 +63,6 @@ const HeroSection = () => {
             </a>
           ))}
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-body"
-        >
-          Full-Stack Developer & UI/UX Designer — Membangun pengalaman digital yang bermakna dan berdampak.
-        </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
