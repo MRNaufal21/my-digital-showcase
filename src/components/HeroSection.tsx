@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Download } from "lucide-react";
+import { ArrowDown, Download, Github, Linkedin, Instagram, Facebook } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -24,11 +24,36 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+          className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight mb-4"
         >
           <span className="text-foreground">Nama</span>{" "}
           <span className="text-gradient">Anda</span>
         </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="flex items-center justify-center gap-4 mb-6"
+        >
+          {[
+            { icon: Github, href: "https://github.com", label: "GitHub" },
+            { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+            { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+            { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+          ].map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <item.icon size={20} />
+            </a>
+          ))}
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
