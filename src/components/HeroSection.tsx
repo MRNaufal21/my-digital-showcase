@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Download } from "lucide-react";
+import { ArrowDown, Download, Github, Linkedin, Instagram, Facebook } from "lucide-react";
 
 const HeroSection = () => {
   return (
