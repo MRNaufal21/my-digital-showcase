@@ -12,7 +12,7 @@ const levelConfig: Record<SkillLevel, { color: string; dots: number }> = {
 
 const skillCategories = [
   {
-    title: "Frontend",
+    title: "Hard Skill",
     skills: [
       { name: "React / Next.js", level: "Expert" as SkillLevel },
       { name: "TypeScript", level: "Expert" as SkillLevel },
@@ -21,21 +21,21 @@ const skillCategories = [
     ],
   },
   {
-    title: "Backend",
+    title: "Soft Skill",
     skills: [
-      { name: "Node.js", level: "Advanced" as SkillLevel },
-      { name: "Python", level: "Advanced" as SkillLevel },
-      { name: "PostgreSQL", level: "Advanced" as SkillLevel },
-      { name: "REST / GraphQL", level: "Expert" as SkillLevel },
+      { name: "Komunikasi", level: "Advanced" as SkillLevel },
+      { name: "Team Work", level: "Expert" as SkillLevel },
+      { name: "Problem Solving", level: "Advanced" as SkillLevel },
+      { name: "Manajemen Waktu", level: "Expert" as SkillLevel },
     ],
   },
   {
-    title: "Tools & Lainnya",
+    title: "Sofware Skill",
     skills: [
-      { name: "Git / GitHub", level: "Expert" as SkillLevel },
-      { name: "Docker", level: "Intermediate" as SkillLevel },
+      { name: "Visual Studio Code", level: "Expert" as SkillLevel },
+      { name: "Microsft Office", level: "Advanced" as SkillLevel },
       { name: "Figma", level: "Advanced" as SkillLevel },
-      { name: "AWS / GCP", level: "Intermediate" as SkillLevel },
+      { name: "Canva", level: "Expert" as SkillLevel },
     ],
   },
 ];

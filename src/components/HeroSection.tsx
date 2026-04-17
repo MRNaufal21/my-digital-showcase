@@ -26,8 +26,8 @@ const HeroSection = () => {
           transition={{ delay: 0.4 }}
           className="font-heading text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight mb-4"
         >
-          <span className="text-foreground">Nama</span>{" "}
-          <span className="text-gradient">Anda</span>
+          <span className="text-foreground">Muhammad</span>{" "}
+          <span className="text-gradient">Rizqi Naufal</span>
         </motion.h1>
 
         <motion.p
@@ -36,7 +36,7 @@ const HeroSection = () => {
           transition={{ delay: 0.6 }}
           className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto mb-6 font-body"
         >
-          Full-Stack Developer & UI/UX Designer — Membangun pengalaman digital yang bermakna dan berdampak.
+          Frontend Developer & UI/UX Designer — Membangun pengalaman digital yang bermakna dan berdampak.
         </motion.p>
 
         <motion.div
@@ -46,10 +46,10 @@ const HeroSection = () => {
           className="flex items-center justify-center gap-4 mb-10"
         >
           {[
-            { icon: Github, href: "https://github.com", label: "GitHub" },
-            { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-            { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-            { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+            { icon: Github, href: "https://github.com/MRNaufal21", label: "GitHub" },
+            { icon: Linkedin, href: "https://www.linkedin.com/in/mrnaufal21/", label: "LinkedIn" },
+            { icon: Instagram, href: "https://www.instagram.com/mrnaufal21/", label: "Instagram" },
+            { icon: Facebook, href: "https://www.facebook.com/m.r.naufal.391", label: "Facebook" },
           ].map((item) => (
             <a
               key={item.label}
@@ -77,8 +77,9 @@ const HeroSection = () => {
             Lihat Portofolio
           </a>
           <a
-            href="/resume.pdf"
-            download
+            href="https://drive.google.com/file/d/1IJpYkpagVYwMvmwY05xNKTk5n47zmnY9/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-8 py-3.5 border border-border text-foreground font-heading font-medium rounded-lg hover:bg-secondary transition-colors flex items-center gap-2"
           >
             <Download size={18} />

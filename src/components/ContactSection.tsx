@@ -11,7 +11,7 @@ const ContactSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoLink = `mailto:email@contoh.com?subject=Pesan dari ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0ADari: ${formData.name} (${formData.email})`;
+    const mailtoLink = `mailto:rizqinaufal67@gmail.com?subject=Pesan dari ${formData.name}&body=${encodeURIComponent(formData.message)}%0A%0ADari: ${formData.name} (${formData.email})`;
     window.open(mailtoLink, "_blank");
     toast({
       title: "Membuka email client...",
@@ -49,23 +49,23 @@ const ContactSection = () => {
             </p>
 
             <div className="space-y-5">
-              <a href="mailto:email@contoh.com" className="flex items-center gap-4 group">
+              <a href="mailto:rizqinaufal67@gmail.com" className="flex items-center gap-4 group">
                 <div className="p-2.5 rounded-lg bg-primary/10">
                   <Mail className="text-primary" size={20} />
                 </div>
-                <span className="text-foreground group-hover:text-primary transition-colors">email@contoh.com</span>
+                <span className="text-foreground group-hover:text-primary transition-colors">rizqinaufal67@gmail.com</span>
               </a>
               <a href="tel:+6281234567890" className="flex items-center gap-4 group">
                 <div className="p-2.5 rounded-lg bg-primary/10">
                   <Phone className="text-primary" size={20} />
                 </div>
-                <span className="text-foreground group-hover:text-primary transition-colors">+62 812 3456 7890</span>
+                <span className="text-foreground group-hover:text-primary transition-colors">+6281772888219</span>
               </a>
               <div className="flex items-center gap-4">
                 <div className="p-2.5 rounded-lg bg-primary/10">
                   <MapPin className="text-primary" size={20} />
                 </div>
-                <span className="text-foreground">Jakarta, Indonesia</span>
+                <span className="text-foreground">Indramayu, Jawa Barat, Indonesia</span>
               </div>
             </div>
           </motion.div>

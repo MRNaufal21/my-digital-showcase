@@ -4,23 +4,11 @@ import { Briefcase } from "lucide-react";
 
 const experiences = [
   {
-    role: "Senior Frontend Developer",
-    company: "Tech Startup Indonesia",
-    period: "2023 — Sekarang",
-    desc: "Memimpin tim frontend dalam mengembangkan platform SaaS. Meningkatkan performance sebesar 40% dan menerapkan design system yang konsisten.",
-  },
-  {
-    role: "Full-Stack Developer",
-    company: "Digital Agency Jakarta",
-    period: "2021 — 2023",
-    desc: "Mengembangkan 15+ web application untuk berbagai klien. Mengimplementasikan CI/CD pipeline dan mentoring junior developer.",
-  },
-  {
-    role: "Junior Developer",
-    company: "Software House Bandung",
-    period: "2020 — 2021",
-    desc: "Memulai karir sebagai developer, fokus pada frontend development dengan React dan backend dengan Node.js.",
-  },
+    role: "UI/UX Design",
+    company: "PT Dot System Indonesia",
+    period: "April — September 2024",
+    desc: "Merancang Desain Antar muka (UI) dan pengalaman user(UX) untuk aplikasi mobile point of sale.",
+  }
 ];
 
 const ExperienceSection = () => {
@@ -38,7 +26,7 @@ const ExperienceSection = () => {
         >
           <p className="text-primary font-heading text-sm tracking-widest uppercase mb-3">Pengalaman</p>
           <h2 className="font-heading text-3xl sm:text-5xl font-bold">
-            Perjalanan <span className="text-gradient">Karir</span>
+            Pengalaman <span className="text-gradient">Kerja</span>
           </h2>
         </motion.div>
 
