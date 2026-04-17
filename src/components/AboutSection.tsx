@@ -17,7 +17,7 @@ const AboutSection = () => {
         >
           <p className="text-primary font-heading text-sm tracking-widest uppercase mb-3">Tentang Saya</p>
           <h2 className="font-heading text-3xl sm:text-5xl font-bold mb-8">
-            Passionate <span className="text-gradient">Developer</span>
+            Passionate <span className="text-gradient">UI/UX Designer & Frontend Developer</span>
           </h2>
         </motion.div>
 
@@ -45,21 +45,18 @@ const AboutSection = () => {
             className="space-y-5 text-muted-foreground leading-relaxed"
           >
             <p>
-              Saya adalah seorang developer dengan pengalaman lebih dari 3 tahun dalam
-              membangun aplikasi web modern. Fokus utama saya adalah menciptakan
-              solusi digital yang tidak hanya fungsional, tetapi juga memiliki
-              pengalaman pengguna yang luar biasa.
+              Saya adalah seorang Informatics Graduate dari Institut Teknologi Nasional Bandung yang 
+              memiliki passion besar dalam menjembatani aspek visual UI/UX Design dengan implementasi 
+              teknis Frontend Development. Saya berfokus pada pembangunan aplikasi web dan mobile 
+              yang tidak hanya fungsional secara sistem, tetapi juga memberikan pengalaman pengguna yang 
+              intuitif dan menarik.
             </p>
             <p>
-              Dengan latar belakang di bidang desain dan pengembangan, saya mampu
-              menjembatani gap antara visi kreatif dan implementasi teknis.
-              Setiap proyek yang saya kerjakan selalu mengutamakan kualitas dan
-              kepuasan pengguna.
-            </p>
-            <p>
-              Saya selalu bersemangat untuk belajar teknologi baru dan mengikuti
-              perkembangan terkini di dunia web development. Kolaborasi dan
-              komunikasi yang baik adalah kunci keberhasilan setiap proyek.
+              Memiliki pengalaman dalam mengerjakan berbagai proyek digital, mulai dari aplikasi kasir 
+              berbasis web hingga sistem pemesanan tiket pesawat, saya mampu mentransformasikan visi 
+              kreatif menjadi kode yang bersih dan efisien menggunakan teknologi seperti React.js, Vue.js, 
+              dan Flutter. Saya adalah pribadi yang disiplin, berorientasi pada detail, dan selalu antusias 
+              untuk mengadopsi teknologi terbaru guna memberikan solusi digital yang berkualitas tinggi.
             </p>
           </motion.div>
         </div>
