@@ -23,9 +23,9 @@ export interface Project {
 
 export const categories = ["Semua", "Web App", "Mobile", "UI/UX"];
 
-export const projects: Project[] = [
+export const initialProjects: Project[] = [
   {
-    slug: "Aplikasi Web Kasir Restoran",
+    slug: "Aplikasi-Web-Kasir-Restoran",
     title: "Aplikasi Web Kasir Restoran",
     desc: "Aplikasi Web Kasir Restoran Sederhana.",
     fullDesc:
@@ -47,13 +47,11 @@ export const projects: Project[] = [
       "Search & filter masakan yang cepat",
     ],
   },
-
   {
-    slug: "UI Al-Quran",
+    slug: "UI-Al-Quran",
     title: "UI Al-Quran",
     desc: "Projek yang akan datang.",
-    fullDesc:
-      "Desain ini adalah landing page website travel/bus service",
+    fullDesc: "Desain ini adalah landing page website travel/bus service",
     category: "UI/UX",
     tech: ["React", "Vue", "Tailwind CSS", "HTML", "CSS", "JavaScript"],
     image: "https://github.com/MRNaufal21/my-digital-showcase/raw/main/src/assets/alquran.jpg",
@@ -92,8 +90,6 @@ export const projects: Project[] = [
       ],
     },
   },
-
-
   {
     slug: "travel-app",
     title: "Travel App",
@@ -118,9 +114,8 @@ export const projects: Project[] = [
       "Dashboard Statistik Admin",
     ],
   },
-
   {
-    slug: "UI Food",
+    slug: "UI-Food",
     title: "UI Food",
     desc: "Mobile app untuk food ordering / delivery.",
     fullDesc:
@@ -162,9 +157,8 @@ export const projects: Project[] = [
       ],
     },
   },
-
   {
-    slug: "Tiket Bioskop",
+    slug: "Tiket-Bioskop",
     title: "Tiket Bioskop",
     desc: "Aplikasi pemesanan tiket bioskop.",
     fullDesc:
@@ -204,19 +198,18 @@ export const projects: Project[] = [
       ],
     },
   },
-
-   {
-    slug: "Tiket Pesawat",
+  {
+    slug: "Tiket-Pesawat",
     title: "Tiket Pesawat",
-    desc: "Aplikasi pemesanan tiket bioskop.",
+    desc: "Aplikasi pemesanan tiket pesawat.",
     fullDesc:
-      "Aplikasi mobile yang dirancang untuk membantu pengguna mencari dan memesan tiket pesawat dengan antarmuka yang intuitif dan minimalis. Fokus utama adalah kemudahan navigasi bagi pengguna yang ingin melakukan perjalanan cepat..",
+      "Aplikasi mobile yang dirancang untuk membantu pengguna mencari dan memesan tiket pesawat dengan antarmuka yang intuitif dan minimalis. Fokus utama adalah kemudahan navigasi bagi pengguna yang ingin melakukan perjalanan cepat.",
     category: "UI/UX",
     tech: ["Figma", "Flutter"],
     image: "https://github.com/MRNaufal21/my-digital-showcase/raw/main/src/assets/tipe.jpg",
     screenshots: [
       "https://github.com/MRNaufal21/my-digital-showcase/raw/main/src/assets/pesawat.png",
-      "https://github.com/MRNaufal21/my-digital-showcase/raw/main/src/assets/mock-pesawat.png ",
+      "https://github.com/MRNaufal21/my-digital-showcase/raw/main/src/assets/mock-pesawat.png",
     ],
     demo: "https://example.com",
     github: "https://www.figma.com/design/WDQh39FLXeCLjuRaItpb11/Untitled?node-id=0-1&t=YTQU4lMbsmnAoHP4-1",
@@ -233,7 +226,7 @@ export const projects: Project[] = [
       goals: [
         "Menyederhanakan alur pemesanan tiket pesawat",
         "Menonjolkan informasi perjalanan mendatang (Upcoming Trips) di halaman utama",
-        "Memberikan visual destinasi populer untuk meningkatkan minat penggun",
+        "Memberikan visual destinasi populer untuk meningkatkan minat pengguna",
       ],
       painPoints: [
         "Navigasi menu utama yang seringkali terlalu padat dengan informasi tidak relevan",
@@ -247,3 +240,24 @@ export const projects: Project[] = [
     },
   },
 ];
+
+// Helper Functions & Export 'projects' yang dibutuhkan oleh ProjectDetail.tsx
+export const getStoredProjects = (): Project[] => {
+  try {
+    const saved = localStorage.getItem("portfolio_projects");
+    return saved ? JSON.parse(saved) : initialProjects;
+  } catch {
+    return initialProjects;
+  }
+};
+
+export const saveProjects = (projectsList: Project[]) => {
+  try {
+    localStorage.setItem("portfolio_projects", JSON.stringify(projectsList));
+  } catch (e) {
+    alert("Penyimpanan lokal penuh!");
+  }
+};
+
+// Variabel projects agar file lain seperti ProjectDetail.tsx tidak error
+export const projects: Project[] = getStoredProjects();

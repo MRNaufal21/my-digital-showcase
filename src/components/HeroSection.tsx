@@ -77,7 +77,7 @@ const HeroSection = () => {
             Lihat Portofolio
           </a>
           <a
-            href="https://drive.google.com/file/d/1IJpYkpagVYwMvmwY05xNKTk5n47zmnY9/view?usp=sharing"
+            href="https://drive.google.com/file/d/1E0Xr8GdSla0mzeTnzQQHo3GV15P92Din/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-3.5 border border-border text-foreground font-heading font-medium rounded-lg hover:bg-secondary transition-colors flex items-center gap-2"
@@ -87,7 +87,7 @@ const HeroSection = () => {
           </a>
         </motion.div>
       </div>
-
+g
       {/* Scroll indicator */}
       <motion.a
         href="#about"
