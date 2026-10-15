@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Award, X, Plus, Trash2, Upload } from "lucide-react";
 
 import certAlibaba from "@/assets/cert-alibaba.png";
@@ -8,6 +8,7 @@ import certMaribelajar from "@/assets/cert-maribelajar.png";
 import certCodepolitanBootstrap from "@/assets/cert-codepolitan-bootstrap.png";
 import certCodepolitanPhp from "@/assets/cert-codepolitan-php.png";
 
+// DAFTAR SERTIFIKAT UTAMA (Tambahkan/Edit langsung di sini agar permanen di Vercel)
 const initialCertificates = [
   {
     title: "Sistem Manajemen Keselamatan dan Kesehatan Kerja Berbasis SNI ISO 45001:2018",
@@ -52,16 +53,8 @@ const CertificatesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selected, setSelected] = useState<number | null>(null);
 
-  const [certificates, setCertificates] = useState(() => {
-    try {
-      const saved = localStorage.getItem("portfolio_certificates");
-      if (!saved) return initialCertificates;
-      const parsed = JSON.parse(saved);
-      return parsed.length >= initialCertificates.length ? parsed : initialCertificates;
-    } catch {
-      return initialCertificates;
-    }
-  });
+  // Menggunakan data array statis agar sinkron permanen di Vercel
+  const [certificates, setCertificates] = useState(initialCertificates);
 
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -69,15 +62,7 @@ const CertificatesSection = () => {
   const [newDate, setNewDate] = useState("");
   const [newImageBase64, setNewImageBase64] = useState("");
 
-  useEffect(() => {
-    try {
-      localStorage.setItem("portfolio_certificates", JSON.stringify(certificates));
-    } catch (e) {
-      alert("Penyimpanan localStorage penuh! Gambar gagal disimpan. Hapus beberapa sertifikat kustom terlebih dahulu.");
-    }
-  }, [certificates]);
-
-  // Kompresi Gambar Diperketat (Max Width 600px & Kualitas 50%) agar aman di localStorage
+  // Kompresi Gambar untuk Pratinjau Lokal saat Mengisi Form
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -92,7 +77,7 @@ const CertificatesSection = () => {
         img.src = event.target?.result as string;
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 600; // Diperkecil agar ukuran data Base64 ramah localStorage
+          const MAX_WIDTH = 600;
           const scaleSize = MAX_WIDTH / img.width;
           
           if (scaleSize < 1) {
@@ -106,7 +91,6 @@ const CertificatesSection = () => {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           
-          // Kompres kualitas ke 0.5 (50%)
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.5);
           setNewImageBase64(compressedBase64);
         };
@@ -139,7 +123,7 @@ const CertificatesSection = () => {
 
   const handleDelete = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm("Yakin ingin menghapus sertifikat ini?")) {
+    if (confirm("Yakin ingin menghapus sertifikat ini dari tampilan?")) {
       const updated = certificates.filter((_, i) => i !== index);
       setCertificates(updated);
     }
@@ -233,7 +217,7 @@ const CertificatesSection = () => {
               type="submit"
               className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity"
             >
-              Simpan Sertifikat
+              Simpan ke Daftar
             </button>
           </motion.form>
         )}
