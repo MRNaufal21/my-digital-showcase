@@ -8,7 +8,15 @@ import certMaribelajar from "@/assets/cert-maribelajar.png";
 import certCodepolitanBootstrap from "@/assets/cert-codepolitan-bootstrap.png";
 import certCodepolitanPhp from "@/assets/cert-codepolitan-php.png";
 
+// Data Permanen Sertifikat
 const initialCertificates = [
+  {
+    title: "Sistem Manajemen Keselamatan dan Kesehatan Kerja Berbasis SNI ISO 45001:2018",
+    issuer: "Badan Standardisasi Nasional",
+    date: "24 April 2026",
+    // Gunakan URL gambar/placeholder sementara jika file lokal belum disiapkan
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop",
+  },
   {
     title: "Alibaba Cloud Certified Developer",
     issuer: "Alibaba Cloud",
@@ -49,7 +57,9 @@ const CertificatesSection = () => {
   const [certificates, setCertificates] = useState(() => {
     try {
       const saved = localStorage.getItem("portfolio_certificates");
-      return saved ? JSON.parse(saved) : initialCertificates;
+      if (!saved) return initialCertificates;
+      const parsed = JSON.parse(saved);
+      return parsed.length >= initialCertificates.length ? parsed : initialCertificates;
     } catch {
       return initialCertificates;
     }
@@ -65,11 +75,10 @@ const CertificatesSection = () => {
     try {
       localStorage.setItem("portfolio_certificates", JSON.stringify(certificates));
     } catch (e) {
-      alert("Penyimpanan penuh! Hapus beberapa sertifikat lama terlebih dahulu.");
+      alert("Penyimpanan penuh!");
     }
   }, [certificates]);
 
-  // Fungsi Kompres Gambar agar Muat di localStorage
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -83,7 +92,6 @@ const CertificatesSection = () => {
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
-          // Resize gambar ke resolusi sedang (max width 800px)
           const canvas = document.createElement("canvas");
           const MAX_WIDTH = 800;
           const scaleSize = MAX_WIDTH / img.width;
@@ -99,7 +107,6 @@ const CertificatesSection = () => {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           
-          // Kompres kualitas gambar ke JPEG 70%
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
           setNewImageBase64(compressedBase64);
         };
@@ -171,7 +178,7 @@ const CertificatesSection = () => {
             <h3 className="text-lg font-bold text-foreground mb-4">Form Tambah Sertifikat Baru</h3>
             <input
               type="text"
-              placeholder="Judul Sertifikat (Cth: Pelatihan UI/UX)"
+              placeholder="Judul Sertifikat"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               className="w-full p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -180,7 +187,7 @@ const CertificatesSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Penerbit (Cth: Kementerian Investasi / BKPM)"
+                placeholder="Penerbit"
                 value={newIssuer}
                 onChange={(e) => setNewIssuer(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -188,7 +195,7 @@ const CertificatesSection = () => {
               />
               <input
                 type="text"
-                placeholder="Tanggal / Periode (Cth: 31 Agustus s.d 11 September 2026)"
+                placeholder="Tanggal / Periode"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
