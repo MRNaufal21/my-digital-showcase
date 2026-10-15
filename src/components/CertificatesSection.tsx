@@ -8,14 +8,7 @@ import certMaribelajar from "@/assets/cert-maribelajar.png";
 import certCodepolitanBootstrap from "@/assets/cert-codepolitan-bootstrap.png";
 import certCodepolitanPhp from "@/assets/cert-codepolitan-php.png";
 
-// DAFTAR SERTIFIKAT UTAMA (Permanen di Vercel)
 const initialCertificates = [
-  {
-    title: "Sistem Manajemen Keselamatan dan Kesehatan Kerja Berbasis SNI ISO 45001:2018",
-    issuer: "Badan Standardisasi Nasional",
-    date: "24 April 2026",
-    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop",
-  },
   {
     title: "Alibaba Cloud Certified Developer",
     issuer: "Alibaba Cloud",
@@ -53,19 +46,13 @@ const CertificatesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selected, setSelected] = useState<number | null>(null);
 
-  // Menggabungkan data awal kode dengan localStorage agar input form tidak hilang saat refresh
   const [certificates, setCertificates] = useState(() => {
     try {
-      const saved = localStorage.getItem("portfolio_certificates_v2");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Pastikan sertifikat utama dari kode selalu disertakan
-        return parsed;
-      }
+      const saved = localStorage.getItem("portfolio_certificates");
+      return saved ? JSON.parse(saved) : initialCertificates;
     } catch {
-      // ignore
+      return initialCertificates;
     }
-    return initialCertificates;
   });
 
   const [showForm, setShowForm] = useState(false);
@@ -74,21 +61,20 @@ const CertificatesSection = () => {
   const [newDate, setNewDate] = useState("");
   const [newImageBase64, setNewImageBase64] = useState("");
 
-  // Simpan otomatis ke localStorage setiap ada perubahan/penambahan
   useEffect(() => {
     try {
-      localStorage.setItem("portfolio_certificates_v2", JSON.stringify(certificates));
+      localStorage.setItem("portfolio_certificates", JSON.stringify(certificates));
     } catch (e) {
-      alert("Penyimpanan localStorage penuh! Gambar gagal disimpan.");
+      alert("Penyimpanan penuh! Hapus beberapa sertifikat lama terlebih dahulu.");
     }
   }, [certificates]);
 
-  // Kompresi Gambar Sangat Ringan (Max 500px, Kualitas 40%) agar aman di localStorage
+  // Fungsi Kompres Gambar agar Muat di localStorage
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.type === "application/pdf") {
-        alert("File PDF tidak bisa ditampilkan sebagai gambar. Tolong ubah/screenshot ke format PNG/JPG terlebih dahulu.");
+        alert("File PDF tidak bisa ditampilkan sebagai gambar. Tolong ubah/screenshot halaman sertifikat ke format PNG/JPG terlebih dahulu.");
         return;
       }
 
@@ -97,8 +83,9 @@ const CertificatesSection = () => {
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
+          // Resize gambar ke resolusi sedang (max width 800px)
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 500;
+          const MAX_WIDTH = 800;
           const scaleSize = MAX_WIDTH / img.width;
           
           if (scaleSize < 1) {
@@ -112,7 +99,8 @@ const CertificatesSection = () => {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.4);
+          // Kompres kualitas gambar ke JPEG 70%
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
           setNewImageBase64(compressedBase64);
         };
       };
@@ -124,7 +112,7 @@ const CertificatesSection = () => {
     e.preventDefault();
     if (!newTitle || !newIssuer || !newDate) return;
 
-    const imageSource = newImageBase64 || "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop";
+    const imageSource = newImageBase64 || "https://via.placeholder.com/600x450?text=Sertifikat+Baru";
 
     const newCert = {
       title: newTitle,
@@ -150,14 +138,6 @@ const CertificatesSection = () => {
     }
   };
 
-  // Tombol reset opsional untuk memuat ulang data default kode
-  const handleResetDefault = () => {
-    if (confirm("Kembalikan ke daftar sertifikat awal?")) {
-      setCertificates(initialCertificates);
-      localStorage.removeItem("portfolio_certificates_v2");
-    }
-  };
-
   return (
     <section id="certificates" className="py-24 sm:py-32" ref={ref}>
       <div className="max-w-6xl mx-auto px-6">
@@ -172,23 +152,13 @@ const CertificatesSection = () => {
             Sertifikasi & <span className="text-gradient">Pencapaian</span>
           </h2>
 
-          <div className="flex justify-center items-center gap-3 flex-wrap">
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-95 transition-opacity shadow-lg"
-            >
-              <Plus size={16} />
-              {showForm ? "Tutup Form" : "Tambah Sertifikat Baru"}
-            </button>
-
-            <button
-              onClick={handleResetDefault}
-              className="px-4 py-2.5 rounded-xl bg-secondary text-secondary-foreground font-medium text-sm hover:opacity-80 transition-opacity"
-              title="Reset ke data awal"
-            >
-              Reset Default
-            </button>
-          </div>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-95 transition-opacity shadow-lg"
+          >
+            <Plus size={16} />
+            {showForm ? "Tutup Form" : "Tambah Sertifikat Baru"}
+          </button>
         </motion.div>
 
         {showForm && (
@@ -201,7 +171,7 @@ const CertificatesSection = () => {
             <h3 className="text-lg font-bold text-foreground mb-4">Form Tambah Sertifikat Baru</h3>
             <input
               type="text"
-              placeholder="Judul Sertifikat"
+              placeholder="Judul Sertifikat (Cth: Pelatihan UI/UX)"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               className="w-full p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -210,7 +180,7 @@ const CertificatesSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Penerbit"
+                placeholder="Penerbit (Cth: Kementerian Investasi / BKPM)"
                 value={newIssuer}
                 onChange={(e) => setNewIssuer(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -218,7 +188,7 @@ const CertificatesSection = () => {
               />
               <input
                 type="text"
-                placeholder="Tanggal / Periode"
+                placeholder="Tanggal / Periode (Cth: 31 Agustus s.d 11 September 2026)"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
