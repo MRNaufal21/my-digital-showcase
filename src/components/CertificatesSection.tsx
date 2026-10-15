@@ -8,13 +8,11 @@ import certMaribelajar from "@/assets/cert-maribelajar.png";
 import certCodepolitanBootstrap from "@/assets/cert-codepolitan-bootstrap.png";
 import certCodepolitanPhp from "@/assets/cert-codepolitan-php.png";
 
-// Data Permanen Sertifikat
 const initialCertificates = [
   {
     title: "Sistem Manajemen Keselamatan dan Kesehatan Kerja Berbasis SNI ISO 45001:2018",
     issuer: "Badan Standardisasi Nasional",
     date: "24 April 2026",
-    // Gunakan URL gambar/placeholder sementara jika file lokal belum disiapkan
     image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop",
   },
   {
@@ -75,10 +73,11 @@ const CertificatesSection = () => {
     try {
       localStorage.setItem("portfolio_certificates", JSON.stringify(certificates));
     } catch (e) {
-      alert("Penyimpanan penuh!");
+      alert("Penyimpanan localStorage penuh! Gambar gagal disimpan. Hapus beberapa sertifikat kustom terlebih dahulu.");
     }
   }, [certificates]);
 
+  // Kompresi Gambar Diperketat (Max Width 600px & Kualitas 50%) agar aman di localStorage
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -93,7 +92,7 @@ const CertificatesSection = () => {
         img.src = event.target?.result as string;
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 800;
+          const MAX_WIDTH = 600; // Diperkecil agar ukuran data Base64 ramah localStorage
           const scaleSize = MAX_WIDTH / img.width;
           
           if (scaleSize < 1) {
@@ -107,7 +106,8 @@ const CertificatesSection = () => {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          // Kompres kualitas ke 0.5 (50%)
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.5);
           setNewImageBase64(compressedBase64);
         };
       };
@@ -119,7 +119,7 @@ const CertificatesSection = () => {
     e.preventDefault();
     if (!newTitle || !newIssuer || !newDate) return;
 
-    const imageSource = newImageBase64 || "https://via.placeholder.com/600x450?text=Sertifikat+Baru";
+    const imageSource = newImageBase64 || "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop";
 
     const newCert = {
       title: newTitle,
