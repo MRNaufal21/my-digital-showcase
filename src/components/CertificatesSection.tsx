@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { Award, X, Plus, Trash2, Upload } from "lucide-react";
+import { Award, X, Plus, Trash2, Upload, Loader2 } from "lucide-react";
+import { db } from "@/firebase";
+import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
 
 import certAlibaba from "@/assets/cert-alibaba.png";
 import certDicoding from "@/assets/cert-dicoding.png";
@@ -8,7 +10,14 @@ import certMaribelajar from "@/assets/cert-maribelajar.png";
 import certCodepolitanBootstrap from "@/assets/cert-codepolitan-bootstrap.png";
 import certCodepolitanPhp from "@/assets/cert-codepolitan-php.png";
 
-const initialCertificates = [
+// Data default sebagai cadangan jika database kosong
+const defaultCertificates = [
+  {
+    title: "Sistem Manajemen Keselamatan dan Kesehatan Kerja Berbasis SNI ISO 45001:2018",
+    issuer: "Badan Standardisasi Nasional",
+    date: "24 April 2026",
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop",
+  },
   {
     title: "Alibaba Cloud Certified Developer",
     issuer: "Alibaba Cloud",
@@ -46,14 +55,9 @@ const CertificatesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selected, setSelected] = useState<number | null>(null);
 
-  const [certificates, setCertificates] = useState(() => {
-    try {
-      const saved = localStorage.getItem("portfolio_certificates");
-      return saved ? JSON.parse(saved) : initialCertificates;
-    } catch {
-      return initialCertificates;
-    }
-  });
+  const [certificates, setCertificates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -61,20 +65,41 @@ const CertificatesSection = () => {
   const [newDate, setNewDate] = useState("");
   const [newImageBase64, setNewImageBase64] = useState("");
 
-  useEffect(() => {
+  // Ambil data dari Firebase Firestore saat komponen dimuat
+  const fetchCertificates = async () => {
     try {
-      localStorage.setItem("portfolio_certificates", JSON.stringify(certificates));
-    } catch (e) {
-      alert("Penyimpanan penuh! Hapus beberapa sertifikat lama terlebih dahulu.");
-    }
-  }, [certificates]);
+      setLoading(true);
+      const q = query(collection(db, "certificates"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const fetchedData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
-  // Fungsi Kompres Gambar agar Muat di localStorage
+      // Jika database di Firebase masih kosong, kita isi otomatis dengan defaultCertificates
+      if (fetchedData.length === 0) {
+        setCertificates(defaultCertificates);
+      } else {
+        setCertificates(fetchedData);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data dari Firebase:", error);
+      setCertificates(defaultCertificates);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
+
+  // Kompresi Gambar Sangat Ringan agar muat di Firestore Document (< 1MB)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.type === "application/pdf") {
-        alert("File PDF tidak bisa ditampilkan sebagai gambar. Tolong ubah/screenshot halaman sertifikat ke format PNG/JPG terlebih dahulu.");
+        alert("File PDF tidak bisa ditampilkan sebagai gambar. Tolong ubah/screenshot ke format PNG/JPG terlebih dahulu.");
         return;
       }
 
@@ -83,9 +108,8 @@ const CertificatesSection = () => {
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
-          // Resize gambar ke resolusi sedang (max width 800px)
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 800;
+          const MAX_WIDTH = 500;
           const scaleSize = MAX_WIDTH / img.width;
           
           if (scaleSize < 1) {
@@ -99,8 +123,7 @@ const CertificatesSection = () => {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           
-          // Kompres kualitas gambar ke JPEG 70%
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.4);
           setNewImageBase64(compressedBase64);
         };
       };
@@ -108,33 +131,57 @@ const CertificatesSection = () => {
     }
   };
 
-  const handleAddCertificate = (e: React.FormEvent) => {
+  // Tambah sertifikat baru ke Firebase Firestore
+  const handleAddCertificate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle || !newIssuer || !newDate) return;
 
-    const imageSource = newImageBase64 || "https://via.placeholder.com/600x450?text=Sertifikat+Baru";
+    try {
+      setIsSubmitting(true);
+      const imageSource = newImageBase64 || "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&fit=crop";
 
-    const newCert = {
-      title: newTitle,
-      issuer: newIssuer,
-      date: newDate,
-      image: imageSource,
-    };
+      const newCertData = {
+        title: newTitle,
+        issuer: newIssuer,
+        date: newDate,
+        image: imageSource,
+        createdAt: serverTimestamp(),
+      };
 
-    setCertificates([newCert, ...certificates]);
+      await addDoc(collection(db, "certificates"), newCertData);
 
-    setNewTitle("");
-    setNewIssuer("");
-    setNewDate("");
-    setNewImageBase64("");
-    setShowForm(false);
+      // Bersihkan form & refresh data
+      setNewTitle("");
+      setNewIssuer("");
+      setNewDate("");
+      setNewImageBase64("");
+      setShowForm(false);
+      await fetchCertificates();
+      alert("Sertifikat berhasil ditambahkan ke Cloud Firebase!");
+    } catch (error) {
+      console.error("Gagal menyimpan sertifikat:", error);
+      alert("Terjadi kesalahan saat menyimpan ke database.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDelete = (index: number, e: React.MouseEvent) => {
+  // Hapus sertifikat dari Firebase Firestore
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm("Yakin ingin menghapus sertifikat ini?")) {
-      const updated = certificates.filter((_, i) => i !== index);
-      setCertificates(updated);
+    if (!id) {
+      alert("Sertifikat bawaan default tidak dapat dihapus melalui web.");
+      return;
+    }
+
+    if (confirm("Yakin ingin menghapus sertifikat ini secara permanen dari Cloud?")) {
+      try {
+        await deleteDoc(doc(db, "certificates", id));
+        await fetchCertificates();
+      } catch (error) {
+        console.error("Gagal menghapus sertifikat:", error);
+        alert("Gagal menghapus data.");
+      }
     }
   };
 
@@ -168,10 +215,10 @@ const CertificatesSection = () => {
             onSubmit={handleAddCertificate}
             className="mb-16 p-6 rounded-2xl bg-card border border-primary/30 shadow-xl space-y-4 max-w-2xl mx-auto"
           >
-            <h3 className="text-lg font-bold text-foreground mb-4">Form Tambah Sertifikat Baru</h3>
+            <h3 className="text-lg font-bold text-foreground mb-4">Form Tambah Sertifikat Baru (Cloud Database)</h3>
             <input
               type="text"
-              placeholder="Judul Sertifikat (Cth: Pelatihan UI/UX)"
+              placeholder="Judul Sertifikat"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               className="w-full p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -180,7 +227,7 @@ const CertificatesSection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Penerbit (Cth: Kementerian Investasi / BKPM)"
+                placeholder="Penerbit"
                 value={newIssuer}
                 onChange={(e) => setNewIssuer(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -188,7 +235,7 @@ const CertificatesSection = () => {
               />
               <input
                 type="text"
-                placeholder="Tanggal / Periode (Cth: 31 Agustus s.d 11 September 2026)"
+                placeholder="Tanggal / Periode"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
                 className="p-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
@@ -224,50 +271,60 @@ const CertificatesSection = () => {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity"
+              disabled={isSubmitting}
+              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
             >
-              Simpan Sertifikat
+              {isSubmitting && <Loader2 className="animate-spin" size={16} />}
+              {isSubmitting ? "Menyimpan ke Cloud..." : "Simpan ke Cloud Firebase"}
             </button>
           </motion.form>
         )}
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {certificates.map((cert: any, i: number) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 * i }}
-              className="group rounded-xl overflow-hidden bg-card border border-border hover:border-primary/30 transition-colors cursor-pointer relative"
-              onClick={() => setSelected(i)}
-            >
-              <button
-                onClick={(e) => handleDelete(i, e)}
-                className="absolute top-3 right-3 z-20 bg-background/80 backdrop-blur-sm p-1.5 rounded-full text-muted-foreground hover:text-red-500 transition-colors shadow-md"
-                title="Hapus Sertifikat"
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="animate-spin text-primary" size={36} />
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {certificates.map((cert: any, i: number) => (
+              <motion.div
+                key={cert.id || i}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.1 * i }}
+                className="group rounded-xl overflow-hidden bg-card border border-border hover:border-primary/30 transition-colors cursor-pointer relative"
+                onClick={() => setSelected(i)}
               >
-                <Trash2 size={16} />
-              </button>
+                {cert.id && (
+                  <button
+                    onClick={(e) => handleDelete(cert.id, e)}
+                    className="absolute top-3 right-3 z-20 bg-background/80 backdrop-blur-sm p-1.5 rounded-full text-muted-foreground hover:text-red-500 transition-colors shadow-md"
+                    title="Hapus Sertifikat"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
 
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={cert.image}
-                  alt={cert.title}
-                  className="w-full h-full object-contain bg-white p-2 group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-4">
-                <div className="flex items-start gap-2">
-                  <Award className="text-primary mt-0.5 shrink-0" size={16} />
-                  <div>
-                    <p className="font-heading font-semibold text-foreground text-sm">{cert.title}</p>
-                    <p className="text-xs text-muted-foreground">{cert.issuer} · {cert.date}</p>
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={cert.image}
+                    alt={cert.title}
+                    className="w-full h-full object-contain bg-white p-2 group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-start gap-2">
+                    <Award className="text-primary mt-0.5 shrink-0" size={16} />
+                    <div>
+                      <p className="font-heading font-semibold text-foreground text-sm">{cert.title}</p>
+                      <p className="text-xs text-muted-foreground">{cert.issuer} · {cert.date}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
       {selected !== null && certificates[selected] && (
