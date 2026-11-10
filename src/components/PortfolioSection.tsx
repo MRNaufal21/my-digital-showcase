@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2, Upload, Video } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import { categories, Project, getStoredProjects, saveProjects } from "@/data/projects";
 
 const PortfolioSection = () => {
@@ -24,7 +24,6 @@ const PortfolioSection = () => {
   const [github, setGithub] = useState("");
   const [featuresInput, setFeaturesInput] = useState("");
   const [imageBase64, setImageBase64] = useState("");
-  const [videoBase64, setVideoBase64] = useState(""); // State untuk video
 
   // Simpan ke LocalStorage setiap kali daftar proyek diperbarui
   useEffect(() => {
@@ -63,24 +62,6 @@ const PortfolioSection = () => {
     }
   };
 
-  // Handler Upload Video dari File Explorer
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validasi ukuran video (maksimal 3MB agar localStorage tidak jebol)
-      if (file.size > 3 * 1024 * 1024) {
-        alert("Ukuran video terlalu besar! Harap unggah video berukuran di bawah 3MB (durasi pendek / terkompresi).");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setVideoBase64(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   // Handler Tambah Proyek Baru
   const handleAddProject = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +84,6 @@ const PortfolioSection = () => {
       demo: demo || "#",
       github: github || "#",
       features: featuresArray.length > 0 ? featuresArray : ["Fitur Utama"],
-      video: videoBase64 || undefined, // Masukkan data video jika ada
     };
 
     setProjectList([newProject, ...projectList]);
@@ -118,7 +98,6 @@ const PortfolioSection = () => {
     setGithub("");
     setFeaturesInput("");
     setImageBase64("");
-    setVideoBase64("");
     setShowForm(false);
   };
 
@@ -147,6 +126,7 @@ const PortfolioSection = () => {
             Proyek <span className="text-gradient">Terbaik</span>
           </h2>
 
+          {/* Tombol Tambah Proyek */}
           <button
             onClick={() => setShowForm(!showForm)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-95 transition-opacity shadow-lg"
@@ -265,33 +245,6 @@ const PortfolioSection = () => {
               </div>
             )}
 
-            {/* Input Video Proyek (Opsional) */}
-            <div className="space-y-2 pt-2">
-              <label className="block text-xs font-medium text-muted-foreground">
-                Pilih File Video Demo Proyek (.MP4 / .WEBM - Maks 3MB)
-              </label>
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-background border border-border">
-                <Video size={18} className="text-primary shrink-0" />
-                <input
-                  type="file"
-                  accept="video/mp4, video/webm"
-                  onChange={handleVideoChange}
-                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:opacity-90 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            {videoBase64 && (
-              <div className="mt-2">
-                <p className="text-xs text-muted-foreground mb-1">Preview Video:</p>
-                <video
-                  src={videoBase64}
-                  controls
-                  className="max-h-40 rounded-lg border border-border bg-background p-1"
-                />
-              </div>
-            )}
-
             <button
               type="submit"
               className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity"
@@ -334,6 +287,7 @@ const PortfolioSection = () => {
               onClick={() => navigate(`/project/${project.slug}`)}
               className="group rounded-xl overflow-hidden bg-card border border-border hover:border-primary/30 transition-all cursor-pointer relative"
             >
+              {/* Tombol Hapus Proyek */}
               <button
                 onClick={(e) => handleDelete(project.slug, e)}
                 className="absolute top-3 right-3 z-20 bg-background/80 backdrop-blur-sm p-1.5 rounded-full text-muted-foreground hover:text-red-500 transition-colors shadow-md"
@@ -342,25 +296,13 @@ const PortfolioSection = () => {
                 <Trash2 size={16} />
               </button>
 
-              <div className="relative overflow-hidden aspect-video bg-background">
-                {/* Tampilkan Video jika proyek memiliki video, jika tidak tampilkan gambar */}
-                {project.video ? (
-                  <video
-                    src={project.video}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                )}
+              <div className="relative overflow-hidden aspect-video">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="text-sm font-medium text-foreground bg-primary/20 backdrop-blur-sm px-4 py-2 rounded-full">
                     Lihat Detail →

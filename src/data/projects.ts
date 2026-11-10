@@ -10,7 +10,6 @@ export interface Project {
   demo: string;
   github: string;
   features: string[];
-  video?: string;
 
   // UX Research (optional, hanya untuk UI/UX)
   uxResearch?: {
